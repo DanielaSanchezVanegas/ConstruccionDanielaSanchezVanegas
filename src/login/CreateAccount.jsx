@@ -87,7 +87,9 @@ const CreateAccount = ({ setRouter, setisLogin }) => {
           secureTextEntry
         />
 
-        <CustomButton text="Create Account" onPress={onSignInPressed} />
+        <CustomButton
+          text="Create Account"
+          onPress={onSignInPressed} />
 
         <CustomButton
           text="You Do Have Account? Sing In"
