@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -9,15 +9,52 @@ import {
   Pressable,
   Alert,
   StyleSheet,
+  Button,
+  Platform,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-
-const Formulario = ({ modalVisible, setModalVisible }) => {
-  const [trabajador, setTrabajador] = useState([]);
+const Formulario = ({
+  modalVisible,
+  setModalVisible,
+  agregarTrabajador,
+  trabajadorSeleccionado,
+  setTrabajadorSeleccionado,
+}) => {
+  const [trabajador, setTrabajador] = useState('');
   const [cedula, setCedula] = useState('');
   const [novedad, setNovedad] = useState('');
-  const [date, setDate] = useState (() => new Date());
+  const [date, setDate] = useState(() => new Date());
+  const [showPicker, setShowPicker] = useState(false);
+
+  useEffect(() => {
+    if (trabajadorSeleccionado) {
+      setTrabajador(trabajadorSeleccionado.trabajador);
+      setCedula(trabajadorSeleccionado.cedula);
+      setNovedad(trabajadorSeleccionado.novedad);
+      setDate(new Date(trabajadorSeleccionado.date));
+    } else {
+      resetForm();
+    }
+  }, [trabajadorSeleccionado]);
+
+  const resetForm = () => {
+    setTrabajador('');
+    setCedula('');
+    setDate(new Date());
+    setNovedad('');
+    setModalVisible(!modalVisible);
+  };
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShowPicker(Platform.OS === 'ios');
+    setDate(currentDate);
+  };
+
+  const showDatePicker = () => {
+    setShowPicker(true);
+  };
 
   const savetrabajadorHandle = () => {
     if ([trabajador, cedula].includes('')) {
@@ -32,12 +69,9 @@ const Formulario = ({ modalVisible, setModalVisible }) => {
       date,
       novedad,
     };
-    setTrabajador((prevTrabajador) => [...prevTrabajador, nuevoTrabajador]);
-    setModalVisible(!modalVisible);
-    setTrabajador('');
-    setCedula('');
-    setDate(new Date());
-    setNovedad('');
+
+    agregarTrabajador(nuevoTrabajador);
+    resetForm();
   };
 
   return (
@@ -69,21 +103,17 @@ const Formulario = ({ modalVisible, setModalVisible }) => {
           </View>
 
           <View>
-            <Text style={styles.label}>Fecha</Text>
-            <View style={styles.dateContenedor}>
-            <DateTimePicker
-                locale="es"
-                is24Hour={true}
+            <Button title="Seleccionar fecha" onPress={showDatePicker} />
+            {showPicker && (
+              <DateTimePicker
+                testID="dateTimePicker"
                 value={date}
                 mode="date"
+                is24Hour={true}
                 display="default"
-                onChange={(event, selectedDate) => {
-                  if (selectedDate) {
-                    setDate(selectedDate);
-                  }
-                }}
+                onChange={onChange}
               />
-            </View>
+            )}
           </View>
 
           <View>
@@ -126,7 +156,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 15,
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: '500',
   },
 
   input: {
@@ -146,23 +176,24 @@ const styles = StyleSheet.create({
 
   btnGuardar: {
     backgroundColor: '#FFF',
-    width: "100%",
+    width: '100%',
     padding: 15,
     marginVertical: 40,
-    alignItems: "center",
+    alignItems: 'center',
     borderRadius: 30,
   },
 
   btnTextoGuardar: {},
   btnCancelar: {
     backgroundColor: '#FFF',
-    width: "100%",
+    width: '100%',
     padding: 15,
     marginVertical: 1,
-    alignItems: "center",
+    alignItems: 'center',
     borderRadius: 30,
 
   },
+
 });
 
 export default Formulario;

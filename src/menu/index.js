@@ -5,7 +5,7 @@ import Formulario from "./Formulario";
 
 export default function Menu({ setRouter }) {
   const [modalVisible, setModalVisible] = useState(false);
-  const [trabajador, setTrabajador] = useState(true);
+  const [trabajador, setTrabajador] = useState([]); // Inicializar trabajador como una matriz vacía
 
   const CerrarModal = () => {
     setModalVisible(false);
@@ -14,23 +14,24 @@ export default function Menu({ setRouter }) {
   return (
     <View>
       <SafeAreaView style={styles.container}>
-        <Text style={styles.title}>Administracion de Minas</Text>
+        <Text style={styles.title}>Administración de Minas</Text>
 
         <Pressable
           style={styles.btnNuevaCita}
           onPress={() => setModalVisible(!modalVisible)}
+          
         >
           <Text style={styles.btnTextoNuevaCita}>Registro</Text>
         </Pressable>
       </SafeAreaView>
 
       {trabajador.length === 0 ?
-        <Text style={styles.noTrabajador}> no hay citas </Text> :
+        <Text style={styles.noTrabajador}>No hay citas</Text> :
         <FlatList
           style={styles.listado}
           data={trabajador}
-          keyExtractors={item => item}
-          renderItem={(item) => {
+          keyExtractor={(item) => item.id.toString()} 
+          renderItem={({ item }) => { 
             return (
               <Trabajador
                 item={item}
@@ -65,4 +66,3 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 });
-
