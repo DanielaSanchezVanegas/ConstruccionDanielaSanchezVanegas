@@ -1,18 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
-  TextInput,
-  View,
-  Modal,
-  Text,
-  Pressable,
-  Alert,
-  StyleSheet,
-  Button,
-  Platform,
+  SafeAreaView, ScrollView, TextInput, View, Modal, Text,
+  Pressable, Alert, StyleSheet, Button, Platform,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+
 
 const Formulario = ({
   modalVisible,
@@ -26,6 +18,8 @@ const Formulario = ({
   const [novedad, setNovedad] = useState('');
   const [date, setDate] = useState(() => new Date());
   const [showPicker, setShowPicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+
 
   useEffect(() => {
     if (trabajadorSeleccionado) {
@@ -43,7 +37,7 @@ const Formulario = ({
     setCedula('');
     setDate(new Date());
     setNovedad('');
-    setModalVisible(!modalVisible);
+
   };
 
   const onChange = (event, selectedDate) => {
@@ -54,6 +48,14 @@ const Formulario = ({
 
   const showDatePicker = () => {
     setShowPicker(true);
+  };
+
+  const showTimePickerHandle = () => {
+    setShowTimePicker(true);
+  };
+  //ocultar el selector de tiempo
+  const hideTimePicker = () => {
+    setShowTimePicker(false);
   };
 
   const savetrabajadorHandle = () => {
@@ -70,8 +72,15 @@ const Formulario = ({
       novedad,
     };
 
-    agregarTrabajador(nuevoTrabajador);
-    resetForm();
+    if (trabajadorSeleccionado) {
+      agregarTrabajador(nuevoTrabajador);
+    } else {
+      agregarTrabajador(nuevoTrabajador);
+      resetForm();
+    }
+
+    setTrabajadorSeleccionado(null);
+    setModalVisible(false);
   };
 
   return (
@@ -79,6 +88,7 @@ const Formulario = ({
       <SafeAreaView style={styles.contenido}>
         <ScrollView>
           <View>
+            <Text style={styles.title}>Registro de trabajadores</Text>
             <Text style={styles.label}>Nombre del trabajador</Text>
             <TextInput
               style={styles.input}
@@ -103,7 +113,7 @@ const Formulario = ({
           </View>
 
           <View>
-            <Button title="Seleccionar fecha" onPress={showDatePicker} />
+            <Button title="Seleccionar fecha " onPress={showDatePicker} />
             {showPicker && (
               <DateTimePicker
                 testID="dateTimePicker"
@@ -112,6 +122,23 @@ const Formulario = ({
                 is24Hour={true}
                 display="default"
                 onChange={onChange}
+              />
+            )}
+          </View>
+
+          <View>
+            <Button title="Seleccionar hora" onPress={showTimePickerHandle} />
+            {showTimePicker && (
+              <DateTimePicker
+                testID="timePicker"
+                value={date}
+                mode="time"
+                is24Hour={true}
+                display="default"
+                onChange={(event, selectedDate) => {
+                  onChange(event, selectedDate);
+                  hideTimePicker();
+                }}
               />
             )}
           </View>
@@ -139,30 +166,44 @@ const Formulario = ({
               <Text style={styles.btnTextoCancelar}>Cancelar</Text>
             </Pressable>
           </View>
+
+          <View>
+            <Text>Fecha y Hora Seleccionada: {date.toLocaleString()}</Text>
+          </View>
+
         </ScrollView>
       </SafeAreaView>
-    </Modal>
+    </Modal >
   );
 };
 
 const styles = StyleSheet.create({
   contenido: {
-    backgroundColor: '#D3D3D3',
+    backgroundColor: '#F5F5F5',
     flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 40,
   },
 
   label: {
-    color: '#FFF',
+    color: '#333',
     marginBottom: 10,
-    marginTop: 15,
-    fontSize: 20,
-    fontWeight: '500',
+    marginTop: 24,
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 
   input: {
     backgroundColor: '#FFF',
+    height: 40,
+    paddingHorizontal: 10,
     paddingBottom: 15,
-    borderRadius: 10,
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: '#888',
+    marginBottom: 20,
+    fontSize: 16,
+
   },
 
   inputnovedad: {
@@ -171,27 +212,45 @@ const styles = StyleSheet.create({
 
   dateContenedor: {
     backgroundColor: '#FFF',
-    borderRadius: 10,
+    borderRadius: 5,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#888',
   },
 
   btnGuardar: {
-    backgroundColor: '#FFF',
-    width: '100%',
+    backgroundColor: '#007BFF',
+    broad: '100%',
     padding: 15,
+    width: '100%',
+    alignItems: 'center',
+    borderRadius: 5,
+
     marginVertical: 40,
     alignItems: 'center',
-    borderRadius: 30,
+
   },
 
-  btnTextoGuardar: {},
+  btnTextoGuardar: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
   btnCancelar: {
-    backgroundColor: '#FFF',
-    width: '100%',
+    backgroundColor: '#888',
+    broad: '100%',
     padding: 15,
-    marginVertical: 1,
-    alignItems: 'center',
-    borderRadius: 30,
 
+    alignItems: 'center',
+    borderRadius: 5,
+  },
+
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+    color: '#333',
   },
 
 });

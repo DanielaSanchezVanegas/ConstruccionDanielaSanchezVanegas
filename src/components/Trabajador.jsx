@@ -1,30 +1,42 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React from 'react'
+import React from 'react';
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 
-const Trabajador = ({ item }) => {
-    const { trabajador, date } = item;
-
-    
-    const trabajadorText = Array.isArray(trabajador) ? trabajador.join(', ') : trabajador;
-    const dateText = Array.isArray(date) ? date.join(', ') : date;
-
-    const formateoDate = (date) => {
-        const newDate = new Date(date);
-        const opciones = {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        };
-        return newDate.toLocaleDateString('es-ES', opciones);
-    };
-
-    return (
-        <View>
-            <Text>{trabajadorText}</Text> {/* Mostrar trabajadorText en lugar de trabajador */}
-            <Text>{formateoDate(dateText)}</Text> {/* Mostrar dateText en lugar de date */}
-        </View>
-    );
+const Trabajador = ({ item, onEliminar, onEditar }) => {
+  const { Trabajador, novedad } = item; // Use "Trabajador" instead of "trabajador"
+  return (
+    <View style={styles.container}>
+      <Text style={styles.text}>{Trabajador}</Text>
+      <Text style={styles.text}>{novedad}</Text>
+      <TouchableOpacity onPress={onEliminar} style={styles.button}>
+        <Text style={styles.buttonText}>Eliminar</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => onEditar(item)} style={styles.button}>
+        <Text style={styles.buttonText}>Editar</Text>
+      </TouchableOpacity>
+    </View>
+  );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  text: {
+    fontSize: 18,
+  },
+  button: {
+    padding: 8,
+    backgroundColor: '#007bff',
+    borderRadius: 4,
+  },
+  buttonText: {
+    color: '#fff',
+  },
+});
 
 export default Trabajador;
