@@ -12,12 +12,10 @@ import CustomButton from "../components/CustomButton";
 import { useUserContext } from "../../context/userProvider";
 
 function validarCadena(cadena) {
-  // Verificar longitud
   if (cadena.length < 8) {
     return false;
   }
 
-  // Verificar al menos una mayúscula, una minúscula, un número y un carácter especial
   const regexMayuscula = /[A-Z]/;
   const regexMinuscula = /[a-z]/;
   const regexNumero = /[0-9]/;
@@ -30,16 +28,11 @@ function validarCadena(cadena) {
     regexEspecial.test(cadena)
   );
 }
-// Contexto
-// Guarda un valor en memoria que tenga acceso en toda la aplicacion
 
 const CreateAccount = ({ setRouter, setisLogin }) => {
   const { height } = useWindowDimensions();
 
-  // Estado de contexto para toda la aplicacion
   const { user, setUser } = useUserContext();
-
-  // Estados del Componente CreateAccount
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -52,11 +45,9 @@ const CreateAccount = ({ setRouter, setisLogin }) => {
       return console.warn("Contraseña no cumple las condiciones");
 
     console.warn("Cuenta Creada");
-
-    // Operador Spreend
     setUser({ name, lastName, email, password });
 
-    // Cambiar pantalla A Login
+   
     setisLogin(false);
   };
 
